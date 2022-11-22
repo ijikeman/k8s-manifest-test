@@ -2,8 +2,27 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
+  labels:
+    app: nginx
 spec:
   containers:
   -
-    name: nginx-c
+    name: nginx-container
     image: nginx:latest
+    volumeMounts:
+    -
+      name: nginx-content
+      mountPath: /usr/share/nginx/html/
+  initContainers:
+   -
+     name: init-content
+     image: alpine
+     command: ["touch", "/nginx-content/index.html"]
+     volumeMounts:
+     -
+       mountPath: /nginx-content/
+       name: nginx-content
+  volumes:
+  -
+    name: nginx-content
+    emptyDir: {}
